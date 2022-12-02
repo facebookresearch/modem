@@ -1,0 +1,114 @@
+<mujoco model="Franka_in_Kitchen">
+<!-- =================================================
+    Copyright 2019 Vikash Kumar
+    Model   :: Franka_in_kitchen (MuJoCoV2.0)
+    Author  :: Vikash Kumar (vikashplus@gmail.com)
+    Details :: https://github.com/vikashplus/furniture_sim
+    License :: Under Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+====================================================== -©vk©-->
+    <size njmax='1000' nconmax='1000'/>
+
+    <include file="basic_scene.xml"/>
+    <include file="../../../sims/franka_sim/assets/assets.xml"/>
+    <include file="../../../sims/franka_sim/assets/gripper_assets.xml"/>
+    <include file="../../../sims/franka_sim/assets/actuator0.xml"/>
+    <include file="../../../sims/franka_sim/assets/gripper_actuator0.xml"/>
+    <include file="../../../sims/furniture_sim/oven/oven_asset.xml"/>
+    <include file="../../../sims/furniture_sim/counters/counters_asset.xml"/>
+    <include file="../../../sims/furniture_sim/backwall/backwall_asset.xml"/>
+    <include file="../../../sims/furniture_sim/slidecabinet/slidecabinet_asset.xml"/>
+    <include file="../../../sims/furniture_sim/hingecabinet/hingecabinet_asset.xml"/>
+    <include file="../../../sims/furniture_sim/microwave/microwave_asset.xml"/>
+    <include file="../../../sims/furniture_sim/kettle/kettle_asset.xml"/>
+
+    <asset>
+        <mesh name="logo" file="../robohive.stl" scale="1.5 1.5 2"/>
+    </asset>
+
+    <visual>
+        <global offwidth="2560" offheight="1920" />
+        <quality shadowsize="4096" offsamples="4" />
+        <map force="0.1" fogend="5" />
+    </visual>
+
+    <compiler inertiafromgeom='auto' inertiagrouprange='3 5' angle="radian"
+              meshdir="../../../sims/franka_sim"
+              texturedir="../../../sims/franka_sim"/>
+
+    <equality>
+        <weld body1="vive_controller" body2="world" solref="0.02 1" solimp=".7 .95 0.050"/>
+    </equality>
+
+    <default>
+        <default class="kettle">
+            <joint damping="0" frictionloss="0" pos="0 0 0" limited="true"/>
+        </default>
+    </default>
+    <worldbody>
+
+        <!-- Mocap -->
+        <body name="vive_controller" mocap="true" pos="-0.440 -0.092 2.026" euler="-1.57 0 -.785">
+            <geom type="box" group="2" pos='0 0 .142' size="0.02 0.10 0.03" contype="0" conaffinity="0" rgba=".9 .7 .95 0" euler="0 0 -.785"/>
+        </body>
+
+        <site name='target' pos='0 0 0' size='0.1' rgba='0 2 0 .2'/>
+        <camera name='left_cap' pos='-1.2 -0.5 1.8' quat='0.78 0.49 -0.22 -0.32' />
+        <camera name='right_cap' pos='1.2 -0.5 1.8' quat='0.76 0.5 0.21 0.35'/>
+        <camera name='left_cap2' mode='targetbody' target='knob 1' pos='-1.4 -1.0 1.8'/>
+        <camera name='right_cap2' mode='targetbody' target='microwave' pos='1.3 -0.7 3.4'/>
+
+        <!-- Robot -->
+        <body pos='0. 0 1.8' euler='0 0 1.57'>
+            <geom type='cylinder' size='.120 .90' pos='-.04 0 -0.90' class='panda_viz'/>
+            <include file="../../../sims/franka_sim/assets/chain0.xml"/>
+        </body>
+
+        <body name='desk' pos='-0.1 0.75 0'>
+
+            <body name="counters1" pos="0 0 0" >
+                <include file="../../../sims/furniture_sim/counters/counters_body.xml"/>
+            </body>
+            <body name="oven" pos="0 0 0" >
+                <include file="../../../sims/furniture_sim/oven/oven_body.xml"/>
+            </body>
+            <body name="backwall" pos="0 0 0" >
+                <include file="../../../sims/furniture_sim/backwall/backwall_body.xml"/>
+            </body>
+            <body name="slidecabinet" pos="0.4 0.3 2.6" >
+                <include file="../../../sims/furniture_sim/slidecabinet/slidecabinet_body.xml"/>
+            </body>
+            <body name="hingecabinet" pos="-0.504 0.28 2.6" >
+                <include file="../../../sims/furniture_sim/hingecabinet/hingecabinet_body.xml"/>
+            </body>
+            <body name="microwave" pos="-0.750 -0.025 1.6" euler="0 0 0.3">
+                <include file="../../../sims/furniture_sim/microwave/microwave_body.xml"/>
+            </body>
+        </body>
+        <body name="kettle0" pos="-0.269 0.35 1.626">
+            <joint class="kettle" name="kettle0:Tx" axis="1 0 0" type="slide" range="-1.25 1.75" ref="-0.269"/>
+            <joint class="kettle" name="kettle0:Ty" axis="0 1 0" type="slide" range="-1.50 1.50" ref="0.35"/>
+            <joint class="kettle" name="kettle0:Tz" axis="0 0 1" type="slide" range="-0.10 2.90" ref="1.61523"/>
+            <joint class="kettle" name="kettle0:Rx" axis="1 0 0" type="hinge" range="-3.14 3.14"/>
+            <joint class="kettle" name="kettle0:Ry" axis="0 1 0" type="hinge" range="-3.14 3.14"/>
+            <joint class="kettle" name="kettle0:Rz" axis="0 0 1" type="hinge" range="-3.14 3.14"/>
+            <include file="../../../sims/furniture_sim/kettle/kettle_body0.xml"/>
+        </body>
+        <geom type="mesh" mesh="logo" conaffinity="0" contype="0" rgba=".3 .3 .3 1" pos=".35 -.6 0.005"/>
+    </worldbody>
+
+    <keyframe>
+        <key qpos='0.16 -1.5 1.84 -2.51 0.36 0.79 1.55 0.00 0.0 1.25561e-05 1.57437e-07 1.25561e-05 1.57437e-07 1.25561e-05 1.57437e-07 1.25561e-05 1.57437e-07 8.24417e-05 9.48283e-05 0 0 0 0 -0.22 0.35 1.61523 0 0 0'/>
+        <key qpos='0.101020992 -1.76349747 1.88974607 -2.4766171 0.325189114 0.82909441 1.62463629 0.039976038 0.0399791002 2.45778156e-05 2.95590127e-07 2.4577741e-05 2.95589217e-07 2.4577741e-05 2.95589217e-07 2.4577741e-05 2.95589217e-07 2.16196258e-05 5.08073663e-06 0.0 0.0 0.0 0.0 -0.268999994 0.349999994 1.61928391 6.89039584e-19 -2.2612212e-05 -8.87580375e-19'
+             qvel='-0.0124094905 0.000307730486 0.0210558046 -0.0211170651 0.0128676305 0.0264535546 -0.00749515183 -0.000134369839 0.000250969693 1.06229627e-13 7.14243539e-16 1.06224762e-13 7.19794728e-16 1.06224762e-13 7.21644648e-16 1.06224762e-13 7.14243539e-16 -1.19464428e-16 -1.47079926e-17 0.0 0.0 0.0 0.0 2.93530267e-09 -1.99505748e-18 3.42031125e-14 -4.39396125e-17 6.6417474e-06 3.52969879e-18' />
+    </keyframe>
+
+    <sensor>
+        <jointpos name="kettle0:Tx" joint="kettle0:Tx"/>
+        <jointpos name="kettle0:Ty" joint="kettle0:Ty"/>
+        <jointpos name="kettle0:Tz" joint="kettle0:Tz"/>
+        <jointpos name="kettle0:Rx" joint="kettle0:Rx"/>
+        <jointpos name="kettle0:Ry" joint="kettle0:Ry"/>
+        <jointpos name="kettle0:Rz" joint="kettle0:Rz"/>
+    </sensor>
+
+</mujoco>
