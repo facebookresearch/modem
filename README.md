@@ -10,7 +10,7 @@ Original PyTorch implementation of [MoDem: Accelerating Visual Model-Based Reinf
   <img width="19.5%" src="https://i.imgur.com/6gswKaN.gif">
   <img width="19.5%" src="https://i.imgur.com/XyGakRx.gif">
   <img width="19.5%" src="https://i.imgur.com/ewoSmCk.gif">
-   <a href="https://arxiv.org/abs/2203.04955">[Paper]</a>&emsp;<a href="https://nicklashansen.github.io/modemrl">[Website]</a>
+   <a href="#">[Paper]</a>&emsp;<a href="https://nicklashansen.github.io/modemrl">[Website]</a>
 </p>
 
 
@@ -39,7 +39,7 @@ If you use this repo in your research, please consider citing the paper as follo
 
 ## Instructions
 
-We assume that your machine has a CUDA-enabled GPU, a local copy of MuJoCo 2.1.x installed (required for the Adroit/Meta-World domains), and at least 80GB of memory. Then, create a conda environment with `conda env create -f environment.yml`, and add `/<path>/<to>/<your>/modem/tasks/mj_envs` to your `PYTHONPATH` (required for the Adroit domain). No additional setup required for the DMControl domain. You will also need to configure `wandb` and your demonstration/logging directories in `cfgs/config.yaml`. Once setup is complete, you should be able to run the following commands.
+We assume that your machine has a CUDA-enabled GPU, a local copy of MuJoCo 2.1.x installed (required for the Adroit/Meta-World domains), and at least 80GB of memory. Then, create a conda environment with `conda env create -f environment.yml`, and add `/<path>/<to>/<your>/modem/tasks/mj_envs` to your `PYTHONPATH` (required for the Adroit domain). No additional setup required for the DMControl domain. You will also need to configure `wandb` and your demonstration/logging directories in `cfgs/config.yaml`. Demonstrations are made available [here](https://github.com/facebookresearch/modem/releases/tag/v.0.1.0). Once setup is complete, you should be able to run the following commands.
 
 To train MoDem on a task from **Adroit**:
 
