@@ -1,6 +1,7 @@
 # Base robot class for other hardware devices to inheret from
 import abc
 
+
 class hardwareBase(abc.ABC):
     def __init__(self, name, *args, **kwargs):
         self.name = name

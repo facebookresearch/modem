@@ -10,6 +10,7 @@ import torchcontrol as toco
 from .hardware_base import hardwareBase
 import argparse
 
+
 class JointPDPolicy(toco.PolicyModule):
     """
     Custom policy that performs PD control around a desired joint position
@@ -42,7 +43,6 @@ class JointPDPolicy(toco.PolicyModule):
         return {"torque_desired": output}
 
 
-
 class FrankaArm(hardwareBase):
     def __init__(self, name, ip_address, **kwargs):
         self.name = name
@@ -57,11 +57,11 @@ class FrankaArm(hardwareBase):
     def connect(self, policy=None):
         """Establish hardware connection"""
 
-        if policy==None:
+        if policy == None:
             # Create policy instance
             q_initial = self.get_sensors()
-            default_kq = .025*torch.Tensor(self.robot.metadata.default_Kq)
-            default_kqd = .025*torch.Tensor(self.robot.metadata.default_Kqd)
+            default_kq = 0.025 * torch.Tensor(self.robot.metadata.default_Kq)
+            default_kqd = 0.025 * torch.Tensor(self.robot.metadata.default_Kqd)
             policy = JointPDPolicy(
                 desired_joint_pos=q_initial,
                 kq=default_kq,
@@ -110,13 +110,18 @@ class FrankaArm(hardwareBase):
 
 # Get inputs from user
 def get_args():
-    parser = argparse.ArgumentParser(description="OptiTrack Client: Connects to \
-        the server and fetches streaming data")
+    parser = argparse.ArgumentParser(
+        description="OptiTrack Client: Connects to \
+        the server and fetches streaming data"
+    )
 
-    parser.add_argument("-i", "--server_ip",
-                        type=str,
-                        help="IP address or hostname of the franka server",
-                        default="localhost") # 10.0.0.123 # "169.254.163.91",
+    parser.add_argument(
+        "-i",
+        "--server_ip",
+        type=str,
+        help="IP address or hostname of the franka server",
+        default="localhost",
+    )  # 10.0.0.123 # "169.254.163.91",
     return parser.parse_args()
 
 
@@ -125,7 +130,7 @@ if __name__ == "__main__":
     args = get_args()
 
     # user inputs
-    time_to_go = 2*np.pi
+    time_to_go = 2 * np.pi
     m = 0.5  # magnitude of sine wave (rad)
     T = 2.0  # period of sine wave
     hz = 50  # update frequency
@@ -145,10 +150,9 @@ if __name__ == "__main__":
     for i in range(int(time_to_go * hz)):
         # q_desired[5] = q_initial[5] + m * np.sin(np.pi * i / (T * hz))
         # q_desired[5] = q_initial[5] + 0.05*np.random.uniform(high=1, low=-1)
-        q_desired = q_initial + 0.01*np.random.uniform(high=1, low=-1, size=7)
+        q_desired = q_initial + 0.01 * np.random.uniform(high=1, low=-1, size=7)
 
-        franka.apply_commands(q_desired = q_desired)
+        franka.apply_commands(q_desired=q_desired)
         time.sleep(1 / hz)
 
     franka.close()
-

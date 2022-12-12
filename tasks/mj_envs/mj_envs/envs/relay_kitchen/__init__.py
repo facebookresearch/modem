@@ -2,7 +2,9 @@ import os
 
 from gym.envs.registration import register
 from mj_envs.envs.relay_kitchen.kitchen_multitask_v1 import KitchenTasksV0
-from mj_envs.envs.relay_kitchen.kitchen_multitask_v2 import KitchenFrankaFixed as KitchenFranka
+from mj_envs.envs.relay_kitchen.kitchen_multitask_v2 import (
+    KitchenFrankaFixed as KitchenFranka,
+)
 from mj_envs.envs.relay_kitchen.kitchen_multitask_v2 import KitchenFrankaRandom
 from mj_envs.envs.relay_kitchen.kitchen_multitask_v2 import KitchenFrankaDemo
 from mj_envs.envs.relay_kitchen.kitchen_multitask_v2 import KitchenFrankaRandomDesk

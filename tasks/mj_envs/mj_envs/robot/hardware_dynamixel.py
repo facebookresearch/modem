@@ -2,11 +2,14 @@ from .hardware_base import hardwareBase
 from dynamixel_py import dxl
 import numpy as np
 
+
 class Dynamixels(hardwareBase):
     def __init__(self, name, motor_ids, motor_type, devicename, **kwargs):
         self.name = name
         # initialize dynamixels
-        self.dxls = dxl(motor_id=motor_ids, motor_type=motor_type, devicename=devicename)
+        self.dxls = dxl(
+            motor_id=motor_ids, motor_type=motor_type, devicename=devicename
+        )
         self.motor_ids = motor_ids
 
     def connect(self):
@@ -14,8 +17,10 @@ class Dynamixels(hardwareBase):
         self.dxls.open_port()
 
         # set actuator mode
-        for actuator in device['actuator']:
-            self.dxls.set_operation_mode(motor_id=[actuator['hdr_id']], mode=actuator['mode'])
+        for actuator in device["actuator"]:
+            self.dxls.set_operation_mode(
+                motor_id=[actuator["hdr_id"]], mode=actuator["mode"]
+            )
 
         # engage motors
         self.dxls.engage_motor(motor_id=self.dxls, enable=True)

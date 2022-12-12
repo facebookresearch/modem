@@ -6,6 +6,7 @@ from mj_envs.envs import env_base
 
 VIZ = False
 
+
 class KitchenBase(env_base.MujocoEnv):
 
     DEFAULT_OBS_KEYS_AND_WEIGHTS = {
@@ -40,22 +41,22 @@ class KitchenBase(env_base.MujocoEnv):
 
         self._setup(**kwargs)
 
-
-    def _setup(self,
-               robot_jnt_names,
-               obj_jnt_names,
-               obj_interaction_site,
-               goal,
-               interact_site,
-               obj_init,
-               obs_keys_wt=list(DEFAULT_OBS_KEYS_AND_WEIGHTS.keys()),
-               weighted_reward_keys=DEFAULT_RWD_KEYS_AND_WEIGHTS,
-               # different defaults than what is used in env_base and robot
-               frame_skip=40,
-               obs_range=(-8, 8),
-               act_mode="vel",
-               robot_name="Franka_kitchen_sim",
-               **kwargs,
+    def _setup(
+        self,
+        robot_jnt_names,
+        obj_jnt_names,
+        obj_interaction_site,
+        goal,
+        interact_site,
+        obj_init,
+        obs_keys_wt=list(DEFAULT_OBS_KEYS_AND_WEIGHTS.keys()),
+        weighted_reward_keys=DEFAULT_RWD_KEYS_AND_WEIGHTS,
+        # different defaults than what is used in env_base and robot
+        frame_skip=40,
+        obs_range=(-8, 8),
+        act_mode="vel",
+        robot_name="Franka_kitchen_sim",
+        **kwargs,
     ):
 
         if VIZ:
@@ -108,13 +109,15 @@ class KitchenBase(env_base.MujocoEnv):
             )
         self.set_goal(goal=goal, interact_site=interact_site)
 
-        super()._setup(obs_keys=obs_keys_wt,
-                       weighted_reward_keys=weighted_reward_keys,
-                       frame_skip=frame_skip,
-                       act_mode=act_mode,
-                       obs_range=obs_range,
-                       robot_name=robot_name,
-                       **kwargs)
+        super()._setup(
+            obs_keys=obs_keys_wt,
+            weighted_reward_keys=weighted_reward_keys,
+            frame_skip=frame_skip,
+            act_mode=act_mode,
+            obs_range=obs_range,
+            robot_name=robot_name,
+            **kwargs,
+        )
 
         # NOTE: Keyframe[1] is obtained from one of the RPL demonstrations
         self.init_qpos[:] = self.sim.model.key_qpos[1].copy()
@@ -331,7 +334,9 @@ class KitchenFrankaRandomDesk(KitchenFrankaFixed):
             )
             ncon = 10
             while ncon > 4:
-                self.sim.model.body_pos[14] = np.array([-0.1, 0.75, 0.0]) + np.random.uniform(-0.1, 0.1, (3,))
+                self.sim.model.body_pos[14] = np.array(
+                    [-0.1, 0.75, 0.0]
+                ) + np.random.uniform(-0.1, 0.1, (3,))
                 self.sim.step()
                 ncon = self.sim.data.ncon
         return super().reset(reset_qpos=reset_qpos, reset_qvel=reset_qvel)

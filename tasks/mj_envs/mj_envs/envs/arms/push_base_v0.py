@@ -4,11 +4,10 @@ import numpy as np
 
 from mj_envs.envs import env_base
 
+
 class PushBaseV0(env_base.MujocoEnv):
 
-    DEFAULT_OBS_KEYS = [
-        'qp', 'qv', 'object_err', 'target_err'
-    ]
+    DEFAULT_OBS_KEYS = ["qp", "qv", "object_err", "target_err"]
     DEFAULT_RWD_KEYS_AND_WEIGHTS = {
         "object_dist": -1.0,
         "target_dist": -1.0,
@@ -34,18 +33,18 @@ class PushBaseV0(env_base.MujocoEnv):
 
         self._setup(**kwargs)
 
-
-    def _setup(self,
-               robot_site_name,
-               object_site_name,
-               target_site_name,
-               target_xyz_range,
-               frame_skip=4,
-               reward_mode="dense",
-               obs_keys=DEFAULT_OBS_KEYS,
-               weighted_reward_keys=DEFAULT_RWD_KEYS_AND_WEIGHTS,
-               **kwargs,
-        ):
+    def _setup(
+        self,
+        robot_site_name,
+        object_site_name,
+        target_site_name,
+        target_xyz_range,
+        frame_skip=4,
+        reward_mode="dense",
+        obs_keys=DEFAULT_OBS_KEYS,
+        weighted_reward_keys=DEFAULT_RWD_KEYS_AND_WEIGHTS,
+        **kwargs,
+    ):
 
         # ids
         self.grasp_sid = self.sim.model.site_name2id(robot_site_name)
@@ -53,43 +52,59 @@ class PushBaseV0(env_base.MujocoEnv):
         self.target_sid = self.sim.model.site_name2id(target_site_name)
         self.target_xyz_range = target_xyz_range
 
-        super()._setup(obs_keys=obs_keys,
-                       weighted_reward_keys=weighted_reward_keys,
-                       reward_mode=reward_mode,
-                       frame_skip=frame_skip,
-                       **kwargs)
+        super()._setup(
+            obs_keys=obs_keys,
+            weighted_reward_keys=weighted_reward_keys,
+            reward_mode=reward_mode,
+            frame_skip=frame_skip,
+            **kwargs,
+        )
 
     def get_obs_dict(self, sim):
         obs_dict = {}
-        obs_dict['t'] = np.array([self.sim.data.time])
-        obs_dict['qp'] = sim.data.qpos.copy()
-        obs_dict['qv'] = sim.data.qvel.copy()
-        obs_dict['object_err'] = sim.data.site_xpos[self.object_sid]-sim.data.site_xpos[self.grasp_sid]
-        obs_dict['target_err'] = sim.data.site_xpos[self.target_sid]-sim.data.site_xpos[self.object_sid]
+        obs_dict["t"] = np.array([self.sim.data.time])
+        obs_dict["qp"] = sim.data.qpos.copy()
+        obs_dict["qv"] = sim.data.qvel.copy()
+        obs_dict["object_err"] = (
+            sim.data.site_xpos[self.object_sid] - sim.data.site_xpos[self.grasp_sid]
+        )
+        obs_dict["target_err"] = (
+            sim.data.site_xpos[self.target_sid] - sim.data.site_xpos[self.object_sid]
+        )
         return obs_dict
 
-
     def get_reward_dict(self, obs_dict):
-        object_dist = np.linalg.norm(obs_dict['object_err'], axis=-1)
-        target_dist = np.linalg.norm(obs_dict['target_err'], axis=-1)
+        object_dist = np.linalg.norm(obs_dict["object_err"], axis=-1)
+        target_dist = np.linalg.norm(obs_dict["target_err"], axis=-1)
         far_th = 1.25
 
-        rwd_dict = collections.OrderedDict((
-            # Optional Keys
-            ('object_dist',   object_dist),
-            ('target_dist',   target_dist),
-            ('bonus',   (object_dist<.1) + (target_dist<.1) + (target_dist<.05)),
-            ('penalty', (object_dist>far_th)),
-            # Must keys
-            ('sparse',  -1.0*target_dist),
-            ('solved',  target_dist<.050),
-            ('done',    object_dist > far_th),
-        ))
-        rwd_dict['dense'] = np.sum([wt*rwd_dict[key] for key, wt in self.rwd_keys_wt.items()], axis=0)
+        rwd_dict = collections.OrderedDict(
+            (
+                # Optional Keys
+                ("object_dist", object_dist),
+                ("target_dist", target_dist),
+                (
+                    "bonus",
+                    (object_dist < 0.1) + (target_dist < 0.1) + (target_dist < 0.05),
+                ),
+                ("penalty", (object_dist > far_th)),
+                # Must keys
+                ("sparse", -1.0 * target_dist),
+                ("solved", target_dist < 0.050),
+                ("done", object_dist > far_th),
+            )
+        )
+        rwd_dict["dense"] = np.sum(
+            [wt * rwd_dict[key] for key, wt in self.rwd_keys_wt.items()], axis=0
+        )
         return rwd_dict
 
     def reset(self):
-        self.sim.model.site_pos[self.target_sid] = self.np_random.uniform(high=self.target_xyz_range['high'], low=self.target_xyz_range['low'])
-        self.sim_obsd.model.site_pos[self.target_sid] = self.sim.model.site_pos[self.target_sid]
+        self.sim.model.site_pos[self.target_sid] = self.np_random.uniform(
+            high=self.target_xyz_range["high"], low=self.target_xyz_range["low"]
+        )
+        self.sim_obsd.model.site_pos[self.target_sid] = self.sim.model.site_pos[
+            self.target_sid
+        ]
         obs = super().reset(self.init_qpos, self.init_qvel)
         return obs
