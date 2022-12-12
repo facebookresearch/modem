@@ -1,0 +1,4 @@
+suite: adroit
+iterations: 8
+episode_length: ???
+demo_schedule: linear(0.75, 0.25, 50000)

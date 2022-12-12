@@ -1,0 +1,4 @@
+suite: dmcontrol
+iterations: 6
+episode_length: 500
+demo_schedule: linear(0.75, 0.25, 50000)
